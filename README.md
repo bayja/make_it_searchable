@@ -1,26 +1,7 @@
 # Make It Searchable
 
-간단한 칼럼 filtering, sorting 기능 제공. 
+간단한 칼럼 filtering, sorting 기능, 아직 마무리 안됨.
 
-## Installation
-
-Add to your Gemfile and run the `bundle` command to install it.
-
-```ruby
-gem "make_it_seachable"
-```
-
-**Requires Ruby 1.9.2 or later.**
-
-
-## Usage
-Call 'make_it_seachable' in an ActiveRecord class
-
-```ruby
-class Lecture < ActiveRecord::Base
-  make_it_seachable
-end
-```
 
 ### Filtering
 ```ruby
