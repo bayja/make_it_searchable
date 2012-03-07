@@ -4,7 +4,13 @@ require 'spec_helper'
 
 class LectureReview < ActiveRecord::Base
   extend MakeItSearchable::GenerateQuery
+  belongs_to :lecture
 end
+
+class Lecture < ActiveRecord::Base
+  has_many :lecture_reviews
+end
+
 
 describe MakeItSearchable::GenerateQuery do
 
@@ -43,6 +49,14 @@ describe MakeItSearchable::GenerateQuery do
     it 'should fall back to default scope when no value has provided' do
       LectureReview._generate_query("title", '').to_sql.should == (
         LectureReview.scoped.to_sql
+      )
+    end
+  end
+  
+  context 'translate join query options' do
+    it 'should generate join filter query' do
+      LectureReview._generate_query("lectures.title-eq", 2).to_sql.should == (
+        LectureReview.joins(:lecture).where("lectures.title" => 2).to_sql
       )
     end
   end

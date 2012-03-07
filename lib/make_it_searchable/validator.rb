@@ -13,7 +13,7 @@ module MakeItSearchable::Validator
   def _valid_filter_option?(name_and_option)
     if name_and_option.present?
       column_name, option = MakeItSearchable._extract_column_name_and_query_option(name_and_option)
-      column_names.include?(column_name.to_s)
+      column_names.include?(column_name.to_s) or column_name.to_s.include?(".")
     else
       false
     end

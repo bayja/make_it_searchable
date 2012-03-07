@@ -6,10 +6,11 @@ module MakeItSearchable::GenerateQuery
     return self.scoped unless value.present?
     return self.scoped unless _valid_filter_option?(column_and_option)
 
-    custom_scope = self.scoped
-
     column, query_option = MakeItSearchable._extract_column_name_and_query_option(column_and_option)
     
+    custom_scope = self.scoped
+    custom_scope = _add_inner_join(custom_scope, column)
+
     case query_option
     when 'eq'
       if value == 'true' or value == 'false'
@@ -32,8 +33,27 @@ module MakeItSearchable::GenerateQuery
         custom_scope = custom_scope.where("#{column} LIKE ?", "%#{value}%")
       end
     end
-  
+
     custom_scope
   end
   
+  def _add_inner_join(custom_scope, column)
+    if column.to_s.include?(".")
+      join_table_name = column.split(".").first
+      associations_name = custom_scope.klass.reflect_on_all_associations.map(&:name)
+
+      begin
+        if associations_name.include?(join_table_name.to_sym)
+          custom_scope.joins(join_table_name.to_sym)
+        else
+          custom_scope.joins(join_table_name.singularize.to_sym)
+        end
+      rescue
+        custom_scope
+      end
+
+    else
+      custom_scope
+    end
+  end
 end

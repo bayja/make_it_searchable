@@ -19,6 +19,11 @@ class CreateTestData < ActiveRecord::Migration
       t.datetime :created_at
       t.datetime :updated_at
     end
+    
+    create_table :lectures do |t|
+      t.string :title
+      t.text  :body
+    end
   end
 end
 
