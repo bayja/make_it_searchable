@@ -42,14 +42,10 @@ module MakeItSearchable::GenerateQuery
       join_table_name = column.split(".").first
       associations_name = custom_scope.klass.reflect_on_all_associations.map(&:name)
 
-      begin
-        if associations_name.include?(join_table_name.to_sym)
-          custom_scope.joins(join_table_name.to_sym)
-        else
-          custom_scope.joins(join_table_name.singularize.to_sym)
-        end
-      rescue
-        custom_scope
+      if associations_name.include?(join_table_name.to_sym)
+        custom_scope.joins(join_table_name.to_sym)
+      else
+        custom_scope.joins(join_table_name.singularize.to_sym)
       end
 
     else

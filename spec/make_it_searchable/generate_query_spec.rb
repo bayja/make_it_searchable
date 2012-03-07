@@ -8,9 +8,9 @@ class LectureReview < ActiveRecord::Base
 end
 
 class Lecture < ActiveRecord::Base
+  extend MakeItSearchable::GenerateQuery
   has_many :lecture_reviews
 end
-
 
 describe MakeItSearchable::GenerateQuery do
 
@@ -37,7 +37,6 @@ describe MakeItSearchable::GenerateQuery do
       LectureReview._generate_query("won-eq", 'false').to_sql.should == (
         LectureReview.where(:won => false).to_sql
       )
-      
     end
 
     it 'should fall back to default scope when invalid filter option provied' do
@@ -60,7 +59,22 @@ describe MakeItSearchable::GenerateQuery do
       )
     end
   end
+
+  context 'add inner join' do
+    it 'should add inner join query with sigular association name' do
+      LectureReview._add_inner_join(LectureReview.scoped, 'lectures.title').to_sql.should == (
+        LectureReview.scoped.joins(:lecture).to_sql
+      )
+    end
+
+    it 'should add inner join query with plural association name' do
+      Lecture._add_inner_join(Lecture.scoped, 'lecture_reviews.title').to_sql.should == (
+        Lecture.scoped.joins(:lecture_reviews).to_sql
+      )
+    end
+  end
   
-end 
+end
+
 
 
