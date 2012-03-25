@@ -4,11 +4,13 @@ require 'spec_helper'
 
 class LectureReview < ActiveRecord::Base
   extend MakeItSearchable::GenerateQuery
+  extend MakeItSearchable::Validator
   belongs_to :lecture
 end
 
 class Lecture < ActiveRecord::Base
   extend MakeItSearchable::GenerateQuery
+  extend MakeItSearchable::Validator
   has_many :lecture_reviews
 end
 
@@ -36,6 +38,9 @@ describe MakeItSearchable::GenerateQuery do
       )
       LectureReview._generate_query("won-eq", 'false').to_sql.should == (
         LectureReview.where(:won => false).to_sql
+      )
+      LectureReview._generate_query("region_id-eq", 'nil').to_sql.should == (
+        LectureReview.where(:region_id => nil).to_sql
       )
     end
 

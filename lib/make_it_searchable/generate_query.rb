@@ -13,7 +13,9 @@ module MakeItSearchable::GenerateQuery
 
     case query_option
     when 'eq'
-      if value == 'true' or value == 'false'
+      if value == 'nil'
+        custom_scope = custom_scope.where( column => nil)
+      elsif value == 'true' or value == 'false'
         custom_scope = custom_scope.where( column => (value == 'true') )
       else
         custom_scope = custom_scope.where(column => value)
