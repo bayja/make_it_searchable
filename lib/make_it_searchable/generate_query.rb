@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 module MakeItSearchable::GenerateQuery
   
   def _generate_query(column_and_option, value)
@@ -10,6 +9,9 @@ module MakeItSearchable::GenerateQuery
     
     custom_scope = self.scoped
     custom_scope = _add_inner_join(custom_scope, column)
+
+    data_type = self.columns.select {|col| col.name == column.to_s}.first.type rescue nil
+    value = Time.zone.parse(value) if data_type == :datetime or data_type == :date
 
     case query_option
     when 'eq'

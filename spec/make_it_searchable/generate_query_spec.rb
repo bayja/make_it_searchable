@@ -1,5 +1,4 @@
 # encoding: utf-8
-
 require 'spec_helper'
 
 class LectureReview < ActiveRecord::Base
@@ -42,6 +41,9 @@ describe MakeItSearchable::GenerateQuery do
       LectureReview._generate_query("region_id-eq", 'nil').to_sql.should == (
         LectureReview.where(:region_id => nil).to_sql
       )
+      LectureReview._generate_query("created_at-gt", '2011-1-1').to_sql.should == (
+        # LectureReview.where("created_at > ?", Time.zone.parse('2011-1-1')).to_sql
+      )      
     end
 
     it 'should fall back to default scope when invalid filter option provied' do
