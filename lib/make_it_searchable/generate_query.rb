@@ -23,13 +23,13 @@ module MakeItSearchable::GenerateQuery
         custom_scope = custom_scope.where(column => value)
       end
     when 'gt'
-      custom_scope = custom_scope.where("#{column} > ?", "#{value}")
+      custom_scope = custom_scope.where("#{column} > ?", value)
     when 'lt'
-      custom_scope = custom_scope.where("#{column} < ?", "#{value}")
+      custom_scope = custom_scope.where("#{column} < ?", value)
     when 'gte'
-      custom_scope = custom_scope.where("#{column} >= ?", "#{value}")
+      custom_scope = custom_scope.where("#{column} >= ?", value)
     when 'lte'
-      custom_scope = custom_scope.where("#{column} <= ?", "#{value}")
+      custom_scope = custom_scope.where("#{column} <= ?", value)
     else
       if value.to_s.match(/([\u3131-\u318E]|[\uAC00-\uD7A3])/) # if Korean
         custom_scope = custom_scope.where("replace(#{column}, ' ', '') LIKE ?", "%#{value.to_s.gsub(/\s/, '')}%")
