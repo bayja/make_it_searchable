@@ -1,17 +1,23 @@
 # encoding: utf-8
 module MakeItSearchable::GenerateQuery
-  
+
   def _generate_query(column_and_option, value)
     return self.scoped unless value.present?
     return self.scoped unless _valid_filter_option?(column_and_option)
 
     column, query_option = MakeItSearchable._extract_column_name_and_query_option(column_and_option)
-    
+
     custom_scope = self.scoped
     custom_scope = _add_inner_join(custom_scope, column)
 
     data_type = self.columns.select {|col| col.name == column.to_s}.first.type rescue nil
-    value = Time.zone.parse(value) if data_type == :datetime or data_type == :date
+    if data_type == :datetime or data_type == :date
+      value = Time.zone.parse(value)
+      if query_option == "lt" || query_option == 'lte'
+        value = value.end_of_day
+      end
+      value
+    end
 
     case query_option
     when 'eq'
@@ -40,7 +46,7 @@ module MakeItSearchable::GenerateQuery
 
     custom_scope
   end
-  
+
   def _add_inner_join(custom_scope, column)
     if column.to_s.include?(".")
       join_table_name = column.split(".").first
