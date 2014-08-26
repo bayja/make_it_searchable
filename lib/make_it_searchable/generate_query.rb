@@ -50,6 +50,8 @@ module MakeItSearchable::GenerateQuery
   def _add_inner_join(custom_scope, column)
     if column.to_s.include?(".")
       join_table_name = column.split(".").first
+      return custom_scope if join_table_name == custom_scope.klass.table_name
+
       associations_name = custom_scope.klass.reflect_on_all_associations.map(&:name)
 
       if associations_name.include?(join_table_name.to_sym)
